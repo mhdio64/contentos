@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ClientStatus {
+  ACTIVE
+  PAUSED
+  ARCHIVED
+}
+
+enum CampaignStatus {
+  PLANNED
+  ACTIVE
+  PAUSED
+  COMPLETED
+}
+
+enum ChannelType {
+  WEBSITE
+  INSTAGRAM
+  TELEGRAM
+  LINKEDIN
+  EMAIL
+  ETA
+  BALE
+  OTHER
+}
+
+enum ContentStatus {
+  IDEA
+  DRAFT
+  REVIEW
+  APPROVED
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContentPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Client {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String       @unique
+  status      ClientStatus @default(ACTIVE)
+  industry    String?
+  contactName String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  campaigns    Campaign[]
+  contentItems ContentItem[]
+}
+
+model Channel {
+  id        String      @id @default(uuid()) @db.Uuid
+  name      String
+  slug      String      @unique
+  type      ChannelType
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  contentItems ContentItem[]
+}
+
+model Campaign {
+  id        String         @id @default(uuid()) @db.Uuid
+  name      String
+  slug      String         @unique
+  objective String?
+  status    CampaignStatus @default(PLANNED)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  clientId String @db.Uuid
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  contentItems ContentItem[]
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model ContentItem {
+  id          String          @id @default(uuid()) @db.Uuid
+  title       String
+  brief       String?
+  status      ContentStatus   @default(IDEA)
+  priority    ContentPriority @default(MEDIUM)
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  clientId String @db.Uuid
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  campaignId String?   @db.Uuid
+  campaign   Campaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+
+  channelId String?  @db.Uuid
+  channel   Channel? @relation(fields: [channelId], references: [id], onDelete: SetNull)
+
+  tags ContentItemTag[]
+
+  @@index([clientId])
+  @@index([campaignId])
+  @@index([channelId])
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+model Tag {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String
+  slug      String   @unique
+  color     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  contentItems ContentItemTag[]
+}
+
+model ContentItemTag {
+  contentItemId String @db.Uuid
+  tagId         String @db.Uuid
+  assignedAt    DateTime @default(now())
+
+  contentItem ContentItem @relation(fields: [contentItemId], references: [id], onDelete: Cascade)
+  tag         Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([contentItemId, tagId])
+}
