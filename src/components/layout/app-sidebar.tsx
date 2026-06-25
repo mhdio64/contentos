@@ -25,10 +25,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader className="h-14 border-b border-sidebar-border px-4 flex items-center">
-        <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <span className="text-xs font-bold leading-none">C</span>
+      <SidebarHeader className="h-14 border-b border-sidebar-border px-4 flex items-center justify-center">
+        <div className="flex items-center gap-2 w-full">
+          <div className="flex h-7 w-7 items-center justify-center rounded bg-primary text-primary-foreground shadow-sm">
+            <span className="text-sm font-bold leading-none">C</span>
           </div>
           <span className="font-semibold tracking-tight text-sm">ContentOS</span>
         </div>
@@ -36,11 +36,11 @@ export function AppSidebar() {
       
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Operations</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs tracking-tight">Operations</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive>
+                <SidebarMenuButton asChild isActive className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-medium">
                   <a href="#">
                     <Home />
                     <span>Dashboard</span>

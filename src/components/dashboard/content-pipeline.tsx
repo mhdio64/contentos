@@ -35,20 +35,20 @@ const pipeline = [
 export function ContentPipeline() {
   return (
     <Card className="flex flex-col">
-      <CardHeader>
-        <CardTitle className="text-sm font-semibold">Content Pipeline</CardTitle>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm font-medium">Content Pipeline</CardTitle>
       </CardHeader>
       <CardContent className="flex-1">
-        <div className="space-y-4">
+        <div className="flex flex-col">
           {pipeline.map((item) => (
-            <div key={item.id} className="flex items-center justify-between border-b border-border/50 pb-4 last:border-0 last:pb-0">
-              <div className="flex flex-col gap-1.5 min-w-0 pr-4">
-                <span className="text-sm font-medium leading-none truncate">{item.title}</span>
-                <span className="text-xs text-muted-foreground truncate">{item.client} • {item.type}</span>
+            <div key={item.id} className="flex items-center justify-between border-b border-border/40 py-3 first:pt-0 last:border-0 last:pb-0">
+              <div className="flex flex-col gap-0.5 min-w-0 pr-4">
+                <span className="text-[13px] font-medium leading-tight truncate">{item.title}</span>
+                <span className="text-[11px] text-muted-foreground truncate">{item.client} &middot; {item.type}</span>
               </div>
               <Badge 
                 variant={item.stage === "In Review" ? "destructive" : item.stage === "Scheduled" ? "default" : "secondary"}
-                className="shrink-0"
+                className="shrink-0 text-[10px] px-1.5 py-0 rounded-sm font-medium uppercase tracking-wider"
               >
                 {item.stage}
               </Badge>

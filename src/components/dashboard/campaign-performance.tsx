@@ -32,33 +32,33 @@ const campaigns = [
 export function CampaignPerformance() {
   return (
     <Card className="flex flex-col">
-      <CardHeader>
-        <CardTitle className="text-sm font-semibold">Campaign Performance</CardTitle>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-sm font-medium">Campaign Performance</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Campaign</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Spend</TableHead>
-                <TableHead className="text-right">Conversions</TableHead>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="h-8 text-xs font-medium">Campaign</TableHead>
+                <TableHead className="h-8 text-xs font-medium">Client</TableHead>
+                <TableHead className="h-8 text-xs font-medium">Status</TableHead>
+                <TableHead className="h-8 text-xs font-medium text-right">Spend</TableHead>
+                <TableHead className="h-8 text-xs font-medium text-right">Conversions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {campaigns.map((c) => (
-                <TableRow key={c.id}>
-                  <TableCell className="font-medium whitespace-nowrap">{c.name}</TableCell>
-                  <TableCell className="text-muted-foreground whitespace-nowrap">{c.client}</TableCell>
-                  <TableCell>
-                    <Badge variant={c.status === "Active" ? "default" : "secondary"}>
+                <TableRow key={c.id} className="border-border/40">
+                  <TableCell className="py-2.5 text-[13px] font-medium whitespace-nowrap">{c.name}</TableCell>
+                  <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">{c.client}</TableCell>
+                  <TableCell className="py-2.5">
+                    <Badge variant={c.status === "Active" ? "default" : "secondary"} className="text-[10px] px-1.5 py-0 font-medium rounded-sm uppercase tracking-wider">
                       {c.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right text-muted-foreground">{c.spend}</TableCell>
-                  <TableCell className="text-right font-medium">{c.conversions}</TableCell>
+                  <TableCell className="py-2.5 text-[13px] text-right text-muted-foreground">{c.spend}</TableCell>
+                  <TableCell className="py-2.5 text-[13px] text-right font-medium">{c.conversions}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
