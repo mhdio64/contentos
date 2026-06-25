@@ -1,0 +1,124 @@
+---
+description: ContentOS project workflow rules
+alwaysApply: true
+---
+
+# ContentOS workflow rules
+
+You are working on ContentOS.
+
+## Project context
+
+ContentOS is a Next.js App Router web app for content operations.
+
+Current stack:
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- PostgreSQL through Docker Compose
+- Prisma 7
+- Prisma Client generated into src/generated/prisma
+- Graphify integration
+- Taste Skill integration
+
+## Mandatory workflow
+
+Before editing files:
+1. Inspect only the files relevant to the task.
+2. Summarize the suspected cause.
+3. List the exact files you plan to change.
+4. Wait for approval unless the user explicitly asked you to edit.
+
+For risky work:
+- Prefer small, reviewable changes.
+- Do not rewrite working code.
+- Do not change unrelated UI.
+- Do not install dependencies without approval.
+- Do not change Prisma schema without approval.
+- Do not create CRUD pages unless requested.
+- Do not merge to main.
+
+## Database rules
+
+Local database access must use 127.0.0.1, not localhost.
+
+Use this local shape:
+
+DATABASE_URL="postgresql://contentos:<password>@127.0.0.1:5433/contentos?schema=public"
+
+Never commit:
+- .env
+- src/generated/prisma/
+- node_modules/
+- .next/
+
+Never hardcode database passwords in:
+- docker-compose.yml
+- source files
+- Prisma files
+
+docker-compose.yml must read database credentials from .env.
+
+## Prisma rules
+
+Before changing database-related code, inspect:
+- prisma.config.ts
+- prisma/schema.prisma
+- prisma/seed.ts
+- src/lib/db.ts
+- src/lib/dashboard-data.ts
+- .env.example
+- docker-compose.yml
+
+Use only schema-backed data or safely derived counts.
+
+Do not create fake metrics:
+- no fake spend
+- no fake conversions
+- no fake engagement
+- no fake growth percentage
+
+For dashboard KPIs, use real data:
+- active campaigns count from Campaign
+- content in review count from ContentItem
+- scheduled content count from ContentItem
+- active channels count from Channel
+
+After database changes, run:
+- npx prisma validate
+- npx prisma generate
+- npm run db:seed
+- npm run lint
+- npm run build
+
+## UI rules
+
+Follow the Taste Skill when changing UI.
+
+Keep the dashboard:
+- compact
+- professional
+- B2B SaaS oriented
+- schema-backed where data is dynamic
+
+Avoid:
+- purple AI gradients
+- fake glassmorphism
+- oversized cards
+- decorative noise
+- dummy dashboard numbers
+
+## Git rules
+
+Use feature branches.
+
+Before commit:
+- git status --short
+- git diff --stat
+- npm run lint
+- npm run build
+
+Commit messages should be short and specific.
+
+Do not commit WIP to main.
