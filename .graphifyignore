@@ -1,0 +1,15 @@
+# Keep this baseline code-only.
+# Docs, markdown, and images require an LLM backend.
+
+*.md
+*.mdx
+*.txt
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+*.ico
+
+public/
