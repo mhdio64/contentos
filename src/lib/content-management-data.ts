@@ -64,6 +64,11 @@ export async function getClientDetail(slug: string) {
     where: { slug },
     include: {
       contacts: { orderBy: [{ isPrimary: "desc" }, { name: "asc" }] },
+      activities: {
+        take: 20,
+        orderBy: { occurredAt: "desc" },
+        include: { contact: { select: { id: true, name: true } } },
+      },
       campaigns: { orderBy: { updatedAt: "desc" } },
       contentItems: {
         include: { campaign: true, channel: true },
@@ -94,6 +99,14 @@ export async function getClientDetail(slug: string) {
       notes: contact.notes ?? EMPTY_LABEL,
       createdAt: formatPersianDate(contact.createdAt),
       updatedAt: formatPersianDate(contact.updatedAt),
+    })),
+    activities: client.activities.map((activity) => ({
+      id: activity.id,
+      type: activity.type,
+      title: activity.title,
+      body: activity.body,
+      occurredAt: formatPersianDateTime(activity.occurredAt),
+      contactName: activity.contact?.name ?? null,
     })),
     campaigns: client.campaigns.map((campaign) => ({
       id: campaign.id,
@@ -132,6 +145,30 @@ export async function getClientContactCreateContext(slug: string) {
     slug: client.slug,
     contactCount: client._count.contacts,
     defaultIsPrimary: client._count.contacts === 0,
+  };
+}
+
+export async function getClientActivityCreateContext(slug: string) {
+  const client = await db.client.findUnique({
+    where: { slug },
+    select: {
+      name: true,
+      slug: true,
+      contacts: {
+        select: { id: true, name: true },
+        orderBy: [{ isPrimary: "desc" }, { name: "asc" }],
+      },
+    },
+  });
+
+  if (!client) {
+    return null;
+  }
+
+  return {
+    name: client.name,
+    slug: client.slug,
+    contacts: client.contacts,
   };
 }
 

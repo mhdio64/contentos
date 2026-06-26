@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { Briefcase, FileText, Plus, UserRound } from "lucide-react"
+import { Briefcase, Clock, FileText, Plus, UserRound } from "lucide-react"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -20,6 +20,7 @@ import {
   getClientStatusLabel,
   getContentPriorityLabel,
   getContentStatusLabel,
+  getActivityTypeLabel,
   EMPTY_LABEL,
 } from "@/lib/persian-format"
 
@@ -158,6 +159,88 @@ export default async function ClientDetailPage({
                     >
                       <Plus className="size-3.5" />
                       مخاطب جدید
+                    </Link>
+                  </Button>
+                }
+              />
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <CardTitle className="text-sm font-medium">فعالیت‌ها</CardTitle>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  ۲۰ فعالیت اخیر مشتری
+                </p>
+              </div>
+              <Button asChild size="sm" variant="outline">
+                <Link
+                  href={`/clients/${encodeURIComponent(client.slug)}/activities/new`}
+                >
+                  <Plus className="size-3.5" />
+                  فعالیت جدید
+                </Link>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {client.activities.length > 0 ? (
+              <ul className="flex flex-col gap-3">
+                {client.activities.map((activity) => (
+                  <li
+                    key={activity.id}
+                    className="rounded-md border border-border/40 px-3 py-2.5"
+                  >
+                    <div className="flex items-start justify-between gap-3 flex-wrap">
+                      <div className="flex items-center gap-2 flex-wrap min-w-0">
+                        <Badge
+                          variant="secondary"
+                          className="text-[10px] px-1.5 py-0 font-medium rounded-sm shrink-0"
+                        >
+                          {getActivityTypeLabel(activity.type)}
+                        </Badge>
+                        <span
+                          dir="auto"
+                          className="text-[13px] font-medium leading-snug"
+                        >
+                          {activity.title}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-muted-foreground whitespace-nowrap shrink-0">
+                        {activity.occurredAt}
+                      </span>
+                    </div>
+                    {activity.contactName ? (
+                      <p className="text-[11px] text-muted-foreground mt-1">
+                        مخاطب: <span dir="auto">{activity.contactName}</span>
+                      </p>
+                    ) : null}
+                    {activity.body ? (
+                      <p
+                        dir="auto"
+                        className="text-[13px] text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed"
+                      >
+                        {activity.body}
+                      </p>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <EmptyState
+                icon={Clock}
+                title="هنوز فعالیتی ثبت نشده"
+                description="فعالیت‌های این مشتری پس از ثبت، در اینجا نمایش داده می‌شوند."
+                action={
+                  <Button asChild variant="outline" size="sm">
+                    <Link
+                      href={`/clients/${encodeURIComponent(client.slug)}/activities/new`}
+                    >
+                      <Plus className="size-3.5" />
+                      فعالیت جدید
                     </Link>
                   </Button>
                 }

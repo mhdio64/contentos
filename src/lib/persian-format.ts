@@ -91,6 +91,16 @@ export const CONTENT_PRIORITY_LABELS = {
   URGENT: "فوری",
 } as const
 
+export const ACTIVITY_TYPE_LABELS = {
+  NOTE: "یادداشت",
+  CALL: "تماس",
+  MEETING: "جلسه",
+  MESSAGE: "پیام",
+  APPROVAL: "تأیید",
+  REVISION: "اصلاح",
+  FOLLOW_UP: "پیگیری",
+} as const
+
 type LabelMap = Record<string, string>
 
 function getLabel(map: LabelMap, value: string): string {
@@ -111,4 +121,14 @@ export function getContentStatusLabel(status: string): string {
 
 export function getContentPriorityLabel(priority: string): string {
   return getLabel(CONTENT_PRIORITY_LABELS, priority)
+}
+
+export function getActivityTypeLabel(type: string): string {
+  return getLabel(ACTIVITY_TYPE_LABELS, type)
+}
+
+/** Local datetime string for HTML datetime-local inputs: YYYY-MM-DDTHH:mm */
+export function toDatetimeLocalValue(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0")
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`
 }
