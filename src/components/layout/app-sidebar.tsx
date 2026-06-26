@@ -2,25 +2,14 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
 } from "@/components/ui/sidebar"
-import {
-  Home,
-  Users,
-  Briefcase,
-  FileText,
-  Share2,
-  Calendar,
-  CheckSquare,
-  LogOut,
-} from "lucide-react"
+import { LogOut } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { AppSidebarNav } from "./app-sidebar-nav"
 
 export function AppSidebar() {
   return (
@@ -33,69 +22,12 @@ export function AppSidebar() {
           <span className="font-semibold tracking-tight text-sm">ContentOS</span>
         </div>
       </SidebarHeader>
-      
+
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs tracking-tight">Operations</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive className="data-[active=true]:bg-primary/10 data-[active=true]:text-primary data-[active=true]:font-medium">
-                  <a href="#">
-                    <Home />
-                    <span>Dashboard</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <Users />
-                    <span>Clients</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <Briefcase />
-                    <span>Campaigns</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <FileText />
-                    <span>Content Ideas</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <Share2 />
-                    <span>Channels</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <Calendar />
-                    <span>Calendar</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="#">
-                    <CheckSquare />
-                    <span>Reviews</span>
-                  </a>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
+            <AppSidebarNav />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
