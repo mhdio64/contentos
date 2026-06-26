@@ -19,13 +19,13 @@ import {
 } from "lucide-react"
 
 const navItems: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "/", label: "Dashboard", icon: Home },
-  { href: "/clients", label: "Clients", icon: Users },
-  { href: "/campaigns", label: "Campaigns", icon: Briefcase },
-  { href: "/content-ideas", label: "Content Ideas", icon: FileText },
-  { href: "/channels", label: "Channels", icon: Share2 },
-  { href: "/calendar", label: "Calendar", icon: Calendar },
-  { href: "/reviews", label: "Reviews", icon: CheckSquare },
+  { href: "/", label: "داشبورد", icon: Home },
+  { href: "/clients", label: "مشتریان", icon: Users },
+  { href: "/campaigns", label: "کمپین‌ها", icon: Briefcase },
+  { href: "/content-ideas", label: "ایده‌های محتوا", icon: FileText },
+  { href: "/channels", label: "کانال‌ها", icon: Share2 },
+  { href: "/calendar", label: "تقویم", icon: Calendar },
+  { href: "/reviews", label: "بازبینی‌ها", icon: CheckSquare },
 ]
 
 function isNavActive(pathname: string, href: string): boolean {

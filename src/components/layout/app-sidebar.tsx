@@ -13,7 +13,7 @@ import { AppSidebarNav } from "./app-sidebar-nav"
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar side="right">
       <SidebarHeader className="h-14 border-b border-sidebar-border px-4 flex items-center justify-center">
         <div className="flex items-center gap-2 w-full">
           <div className="flex h-7 w-7 items-center justify-center rounded bg-primary text-primary-foreground shadow-sm">
@@ -25,7 +25,7 @@ export function AppSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-xs tracking-tight">Operations</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-xs tracking-tight">عملیات</SidebarGroupLabel>
           <SidebarGroupContent>
             <AppSidebarNav />
           </SidebarGroupContent>
@@ -39,8 +39,8 @@ export function AppSidebar() {
             <AvatarFallback>JD</AvatarFallback>
           </Avatar>
           <div className="flex flex-col flex-1 min-w-0">
-            <span className="truncate text-sm font-medium leading-none">Jane Doe</span>
-            <span className="truncate text-xs text-muted-foreground mt-1">jane@example.com</span>
+            <span className="truncate text-sm font-medium leading-none" dir="auto">Jane Doe</span>
+            <span className="truncate text-xs text-muted-foreground mt-1" dir="auto">jane@example.com</span>
           </div>
           <button className="text-muted-foreground hover:text-foreground">
             <LogOut className="h-4 w-4" />

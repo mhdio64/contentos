@@ -14,6 +14,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getClients } from "@/lib/content-management-data"
+import {
+  formatPersianNumber,
+  getClientStatusLabel,
+} from "@/lib/persian-format"
 
 export const dynamic = "force-dynamic"
 
@@ -25,22 +29,22 @@ export default async function ClientsPage() {
       <div className="flex flex-col gap-4 max-w-7xl mx-auto w-full">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight">Clients</h1>
+            <h1 className="text-xl font-semibold tracking-tight">مشتریان</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              {clients.length} {clients.length === 1 ? "client" : "clients"} in your workspace.
+              {formatPersianNumber(clients.length)} مشتری در فضای کاری شما.
             </p>
           </div>
           <Button asChild size="sm">
             <Link href="/clients/new">
               <Plus className="size-3.5" />
-              New client
+              مشتری جدید
             </Link>
           </Button>
         </div>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">All Clients</CardTitle>
+            <CardTitle className="text-sm font-medium">همه مشتریان</CardTitle>
           </CardHeader>
           <CardContent>
             {clients.length > 0 ? (
@@ -48,12 +52,12 @@ export default async function ClientsPage() {
                 <Table>
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
-                      <TableHead className="h-8 text-xs font-medium">Name</TableHead>
-                      <TableHead className="h-8 text-xs font-medium">Industry</TableHead>
-                      <TableHead className="h-8 text-xs font-medium">Contact</TableHead>
-                      <TableHead className="h-8 text-xs font-medium">Status</TableHead>
-                      <TableHead className="h-8 text-xs font-medium text-right">Campaigns</TableHead>
-                      <TableHead className="h-8 text-xs font-medium text-right">Content</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">نام</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">صنعت</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">رابط</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">وضعیت</TableHead>
+                      <TableHead className="h-8 text-xs font-medium text-end">کمپین‌ها</TableHead>
+                      <TableHead className="h-8 text-xs font-medium text-end">محتوا</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -63,29 +67,30 @@ export default async function ClientsPage() {
                           <Link
                             href={`/clients/${encodeURIComponent(client.slug)}`}
                             className="hover:text-primary hover:underline"
+                            dir="auto"
                           >
                             {client.name}
                           </Link>
                         </TableCell>
                         <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">
-                          {client.industry}
+                          <span dir="auto">{client.industry}</span>
                         </TableCell>
                         <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">
-                          {client.contactName}
+                          <span dir="auto">{client.contactName}</span>
                         </TableCell>
                         <TableCell className="py-2.5">
                           <Badge
                             variant={client.status === "ACTIVE" ? "default" : "secondary"}
-                            className="text-[10px] px-1.5 py-0 font-medium rounded-sm uppercase tracking-wider"
+                            className="text-[10px] px-1.5 py-0 font-medium rounded-sm"
                           >
-                            {client.status}
+                            {getClientStatusLabel(client.status)}
                           </Badge>
                         </TableCell>
-                        <TableCell className="py-2.5 text-[13px] text-muted-foreground text-right tabular-nums">
-                          {client.campaignCount}
+                        <TableCell className="py-2.5 text-[13px] text-muted-foreground text-end tabular-nums">
+                          {formatPersianNumber(client.campaignCount)}
                         </TableCell>
-                        <TableCell className="py-2.5 text-[13px] text-muted-foreground text-right tabular-nums">
-                          {client.contentCount}
+                        <TableCell className="py-2.5 text-[13px] text-muted-foreground text-end tabular-nums">
+                          {formatPersianNumber(client.contentCount)}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -95,13 +100,13 @@ export default async function ClientsPage() {
             ) : (
               <EmptyState
                 icon={Users}
-                title="No clients yet"
-                description="Client records will appear here once they are added to the workspace."
+                title="هنوز مشتری ثبت نشده"
+                description="پس از افزودن مشتری، رکوردها در اینجا نمایش داده می‌شوند."
                 action={
                   <Button asChild variant="outline" size="sm">
                     <Link href="/clients/new">
                       <Plus className="size-3.5" />
-                      New client
+                      مشتری جدید
                     </Link>
                   </Button>
                 }

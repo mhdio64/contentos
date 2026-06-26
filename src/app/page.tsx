@@ -21,9 +21,9 @@ export default async function Home() {
     <DashboardLayout>
       <div className="flex flex-col gap-4 max-w-7xl mx-auto w-full">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">Dashboard</h1>
+          <h1 className="text-xl font-semibold tracking-tight">داشبورد</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Overview of your content operations and campaign performance.
+            نمای کلی عملیات محتوا و عملکرد کمپین‌ها
           </p>
         </div>
         

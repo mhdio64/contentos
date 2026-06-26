@@ -14,6 +14,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { getClientDetail } from "@/lib/content-management-data"
+import {
+  getCampaignStatusLabel,
+  getClientStatusLabel,
+  getContentPriorityLabel,
+  getContentStatusLabel,
+} from "@/lib/persian-format"
 
 export const dynamic = "force-dynamic"
 
@@ -48,30 +54,32 @@ export default async function ClientDetailPage({
           href="/clients"
           className="text-sm text-muted-foreground hover:text-foreground w-fit"
         >
-          ← Back to clients
+          بازگشت به مشتریان
         </Link>
 
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-xl font-semibold tracking-tight">{client.name}</h1>
+            <h1 className="text-xl font-semibold tracking-tight" dir="auto">{client.name}</h1>
             <Badge
               variant={client.status === "ACTIVE" ? "default" : "secondary"}
-              className="text-[10px] px-1.5 py-0 font-medium rounded-sm uppercase tracking-wider"
+              className="text-[10px] px-1.5 py-0 font-medium rounded-sm"
             >
-              {client.status}
+              {getClientStatusLabel(client.status)}
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            {client.industry} · {client.contactName}
+            <span dir="auto">{client.industry}</span>
+            {" · "}
+            <span dir="auto">{client.contactName}</span>
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            Created {client.createdAt} · Updated {client.updatedAt}
+            ایجاد: {client.createdAt} · به‌روزرسانی: {client.updatedAt}
           </p>
         </div>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Campaigns</CardTitle>
+            <CardTitle className="text-sm font-medium">کمپین‌ها</CardTitle>
           </CardHeader>
           <CardContent>
             {client.campaigns.length > 0 ? (
@@ -79,23 +87,23 @@ export default async function ClientDetailPage({
                 <Table>
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
-                      <TableHead className="h-8 text-xs font-medium">Campaign</TableHead>
-                      <TableHead className="h-8 text-xs font-medium">Status</TableHead>
-                      <TableHead className="h-8 text-xs font-medium">Date Range</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">کمپین</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">وضعیت</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">بازه زمانی</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {client.campaigns.map((campaign) => (
                       <TableRow key={campaign.id} className="border-border/40">
                         <TableCell className="py-2.5 text-[13px] font-medium whitespace-nowrap">
-                          {campaign.name}
+                          <span dir="auto">{campaign.name}</span>
                         </TableCell>
                         <TableCell className="py-2.5">
                           <Badge
                             variant={campaign.status === "ACTIVE" ? "default" : "secondary"}
-                            className="text-[10px] px-1.5 py-0 font-medium rounded-sm uppercase tracking-wider"
+                            className="text-[10px] px-1.5 py-0 font-medium rounded-sm"
                           >
-                            {campaign.status}
+                            {getCampaignStatusLabel(campaign.status)}
                           </Badge>
                         </TableCell>
                         <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">
@@ -109,8 +117,8 @@ export default async function ClientDetailPage({
             ) : (
               <EmptyState
                 icon={Briefcase}
-                title="No campaigns yet"
-                description="Campaigns for this client will appear here once they are created."
+                title="هنوز کمپینی ثبت نشده"
+                description="کمپین‌های این مشتری پس از ایجاد، در اینجا نمایش داده می‌شوند."
               />
             )}
           </CardContent>
@@ -118,7 +126,7 @@ export default async function ClientDetailPage({
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Content Items</CardTitle>
+            <CardTitle className="text-sm font-medium">محتوا</CardTitle>
           </CardHeader>
           <CardContent>
             {client.contentItems.length > 0 ? (
@@ -126,40 +134,40 @@ export default async function ClientDetailPage({
                 <Table>
                   <TableHeader>
                     <TableRow className="hover:bg-transparent">
-                      <TableHead className="h-8 text-xs font-medium">Title</TableHead>
-                      <TableHead className="h-8 text-xs font-medium">Status</TableHead>
-                      <TableHead className="h-8 text-xs font-medium">Campaign</TableHead>
-                      <TableHead className="h-8 text-xs font-medium">Channel</TableHead>
-                      <TableHead className="h-8 text-xs font-medium">Priority</TableHead>
-                      <TableHead className="h-8 text-xs font-medium">Updated</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">عنوان</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">وضعیت</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">کمپین</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">کانال</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">اولویت</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">به‌روزرسانی</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {client.contentItems.map((item) => (
                       <TableRow key={item.id} className="border-border/40">
-                        <TableCell className="py-2.5 text-[13px] font-medium max-w-[240px] truncate">
-                          {item.title}
+                        <TableCell className="py-2.5 text-[13px] font-medium max-w-[240px]">
+                          <span dir="auto" className="block truncate">{item.title}</span>
                         </TableCell>
                         <TableCell className="py-2.5">
                           <Badge
                             variant="secondary"
-                            className="text-[10px] px-1.5 py-0 font-medium rounded-sm uppercase tracking-wider"
+                            className="text-[10px] px-1.5 py-0 font-medium rounded-sm"
                           >
-                            {item.status}
+                            {getContentStatusLabel(item.status)}
                           </Badge>
                         </TableCell>
                         <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">
-                          {item.campaign}
+                          <span dir="auto">{item.campaign}</span>
                         </TableCell>
                         <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">
-                          {item.channel}
+                          <span dir="auto">{item.channel}</span>
                         </TableCell>
                         <TableCell className="py-2.5">
                           <Badge
                             variant={priorityVariant(item.priority)}
-                            className="text-[10px] px-1.5 py-0 font-medium rounded-sm uppercase tracking-wider"
+                            className="text-[10px] px-1.5 py-0 font-medium rounded-sm"
                           >
-                            {item.priority}
+                            {getContentPriorityLabel(item.priority)}
                           </Badge>
                         </TableCell>
                         <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">
@@ -173,8 +181,8 @@ export default async function ClientDetailPage({
             ) : (
               <EmptyState
                 icon={FileText}
-                title="No content items yet"
-                description="Content items for this client will appear here once they are added."
+                title="هنوز محتوایی ثبت نشده"
+                description="محتوای این مشتری پس از افزودن، در اینجا نمایش داده می‌شود."
               />
             )}
           </CardContent>
