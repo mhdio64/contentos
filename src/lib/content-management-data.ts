@@ -44,12 +44,55 @@ export async function getClients() {
   return clients.map((client) => ({
     id: client.id,
     name: client.name,
+    slug: client.slug,
     status: client.status,
     industry: client.industry ?? "—",
     contactName: client.contactName ?? "—",
     campaignCount: client._count.campaigns,
     contentCount: client._count.contentItems,
   }));
+}
+
+export async function getClientDetail(slug: string) {
+  const client = await db.client.findUnique({
+    where: { slug },
+    include: {
+      campaigns: { orderBy: { updatedAt: "desc" } },
+      contentItems: {
+        include: { campaign: true, channel: true },
+        orderBy: { updatedAt: "desc" },
+      },
+    },
+  });
+
+  if (!client) {
+    return null;
+  }
+
+  return {
+    name: client.name,
+    slug: client.slug,
+    status: client.status,
+    industry: client.industry ?? "—",
+    contactName: client.contactName ?? "—",
+    createdAt: formatDate(client.createdAt),
+    updatedAt: formatDate(client.updatedAt),
+    campaigns: client.campaigns.map((campaign) => ({
+      id: campaign.id,
+      name: campaign.name,
+      status: campaign.status,
+      dateRange: formatDateRange(campaign.startsAt, campaign.endsAt),
+    })),
+    contentItems: client.contentItems.map((item) => ({
+      id: item.id,
+      title: item.title,
+      status: item.status,
+      campaign: item.campaign?.name ?? "—",
+      channel: item.channel?.name ?? "—",
+      priority: item.priority,
+      updatedAt: formatDateTime(item.updatedAt),
+    })),
+  };
 }
 
 export async function getCampaigns() {
