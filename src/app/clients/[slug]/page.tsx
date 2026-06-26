@@ -29,7 +29,13 @@ export default async function ClientDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const client = await getClientDetail(slug)
+  let decodedSlug = slug
+  try {
+    decodedSlug = decodeURIComponent(slug)
+  } catch {
+    decodedSlug = slug
+  }
+  const client = await getClientDetail(decodedSlug)
 
   if (!client) {
     notFound()

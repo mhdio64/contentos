@@ -1,8 +1,9 @@
 import Link from "next/link"
-import { Users } from "lucide-react"
+import { Plus, Users } from "lucide-react"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { EmptyState } from "@/components/ui/empty-state"
 import {
   Table,
@@ -22,11 +23,19 @@ export default async function ClientsPage() {
   return (
     <DashboardLayout>
       <div className="flex flex-col gap-4 max-w-7xl mx-auto w-full">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight">Clients</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {clients.length} {clients.length === 1 ? "client" : "clients"} in your workspace.
-          </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-xl font-semibold tracking-tight">Clients</h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              {clients.length} {clients.length === 1 ? "client" : "clients"} in your workspace.
+            </p>
+          </div>
+          <Button asChild size="sm">
+            <Link href="/clients/new">
+              <Plus className="size-3.5" />
+              New client
+            </Link>
+          </Button>
         </div>
 
         <Card>
@@ -52,7 +61,7 @@ export default async function ClientsPage() {
                       <TableRow key={client.id} className="border-border/40">
                         <TableCell className="py-2.5 text-[13px] font-medium whitespace-nowrap">
                           <Link
-                            href={`/clients/${client.slug}`}
+                            href={`/clients/${encodeURIComponent(client.slug)}`}
                             className="hover:text-primary hover:underline"
                           >
                             {client.name}
@@ -88,6 +97,14 @@ export default async function ClientsPage() {
                 icon={Users}
                 title="No clients yet"
                 description="Client records will appear here once they are added to the workspace."
+                action={
+                  <Button asChild variant="outline" size="sm">
+                    <Link href="/clients/new">
+                      <Plus className="size-3.5" />
+                      New client
+                    </Link>
+                  </Button>
+                }
               />
             )}
           </CardContent>
