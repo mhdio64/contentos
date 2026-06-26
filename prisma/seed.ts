@@ -15,6 +15,7 @@ async function main() {
   await prisma.contentItemTag.deleteMany();
   await prisma.contentItem.deleteMany();
   await prisma.campaign.deleteMany();
+  await prisma.activity.deleteMany();
   await prisma.contact.deleteMany();
   await prisma.channel.deleteMany();
   await prisma.tag.deleteMany();
@@ -142,6 +143,83 @@ async function main() {
     ],
   });
 
+  const heydariContacts = await prisma.contact.findMany({
+    where: { clientId: heydari.id },
+    orderBy: { name: "asc" },
+  });
+  const houseContacts = await prisma.contact.findMany({
+    where: { clientId: houseOfPaper.id },
+    orderBy: { name: "asc" },
+  });
+  const saraContact = heydariContacts.find((c) => c.name === "سارا احمدی")!;
+  const rezaContact = heydariContacts.find((c) => c.name === "رضا کریمی")!;
+  const maryamContact = houseContacts.find((c) => c.name === "مریم نوری")!;
+
+  await prisma.activity.createMany({
+    data: [
+      {
+        type: "APPROVAL",
+        title: "تأیید مقاله رژیم پس از جراحی اسلیو",
+        body: "سارا احمدی محتوای نهایی را بررسی و برای انتشار تأیید کرد.",
+        occurredAt: new Date("2026-06-24T10:30:00.000Z"),
+        clientId: heydari.id,
+        contactId: saraContact.id,
+      },
+      {
+        type: "CALL",
+        title: "هماهنگی زمان‌بندی انتشار هفته جاری",
+        body: "با رضا کریمی درباره فایل‌های نهایی و زمان انتشار صحبت شد.",
+        occurredAt: new Date("2026-06-23T14:00:00.000Z"),
+        clientId: heydari.id,
+        contactId: rezaContact.id,
+      },
+      {
+        type: "NOTE",
+        title: "یادداشت داخلی تیم محتوا",
+        body: "نیاز به هماهنگی با تیم بالینی برای تصاویر قبل/بعد در کمپین تابستان.",
+        occurredAt: new Date("2026-06-22T09:15:00.000Z"),
+        clientId: heydari.id,
+      },
+      {
+        type: "REVISION",
+        title: "درخواست اصلاح کاروسل اینستاگرام",
+        body: "متن اسلاید سوم باید ساده‌تر و قابل‌فهم‌تر برای مخاطب عمومی بازنویسی شود.",
+        occurredAt: new Date("2026-06-21T16:45:00.000Z"),
+        clientId: heydari.id,
+      },
+      {
+        type: "MEETING",
+        title: "جلسه آغاز کمپین بازگشت به مدرسه",
+        body: "مریم نوری اهداف فصلی و بودجه محتوا را مرور کرد. تمرکز روی لندینگ و لینکدین.",
+        occurredAt: new Date("2026-06-25T11:00:00.000Z"),
+        clientId: houseOfPaper.id,
+        contactId: maryamContact.id,
+      },
+      {
+        type: "MESSAGE",
+        title: "پیام واتساپ درباره عکس محصولات",
+        body: "مریم فایل‌های جدید دفترچه مدرسه را ارسال کرد تا در لندینگ استفاده شود.",
+        occurredAt: new Date("2026-06-24T08:20:00.000Z"),
+        clientId: houseOfPaper.id,
+        contactId: maryamContact.id,
+      },
+      {
+        type: "FOLLOW_UP",
+        title: "پیگیری تأیید متن لندینگ",
+        body: "منتظر بازخورد نهایی تیم بازاریابی درباره تیتر اصلی صفحه محصول.",
+        occurredAt: new Date("2026-06-23T13:30:00.000Z"),
+        clientId: houseOfPaper.id,
+      },
+      {
+        type: "NOTE",
+        title: "ثبت یادداشت عملیاتی",
+        body: "قالب پست لینکدین برای هفته آینده آماده است؛ منتظر تأیید.",
+        occurredAt: new Date("2026-06-20T10:00:00.000Z"),
+        clientId: houseOfPaper.id,
+      },
+    ],
+  });
+
   const bariatricCampaign = await prisma.campaign.create({
     data: {
       name: "Summer Bariatric Education",
@@ -264,6 +342,7 @@ async function main() {
   console.log({
     clients: 2,
     contacts: 4,
+    activities: 8,
     campaigns: 2,
     channels: 4,
     tags: 4,
