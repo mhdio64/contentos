@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { db } from "@/lib/db"
 import { slugify } from "@/lib/slug"
+import { formatPersianNumber } from "@/lib/persian-format"
 
 const CLIENT_STATUSES = ["ACTIVE", "PAUSED", "ARCHIVED"] as const
 type ClientStatusValue = (typeof CLIENT_STATUSES)[number]
@@ -57,22 +58,22 @@ export async function createClient(
   const fieldErrors: NonNullable<CreateClientState["fieldErrors"]> = {}
 
   if (!values.name) {
-    fieldErrors.name = "Name is required."
+    fieldErrors.name = "نام الزامی است."
   } else if (values.name.length > NAME_MAX_LENGTH) {
-    fieldErrors.name = `Name must be ${NAME_MAX_LENGTH} characters or fewer.`
+    fieldErrors.name = `نام باید حداکثر ${formatPersianNumber(NAME_MAX_LENGTH)} کاراکتر باشد.`
   }
 
   if (values.industry.length > OPTIONAL_TEXT_MAX_LENGTH) {
-    fieldErrors.industry = `Industry must be ${OPTIONAL_TEXT_MAX_LENGTH} characters or fewer.`
+    fieldErrors.industry = `صنعت باید حداکثر ${formatPersianNumber(OPTIONAL_TEXT_MAX_LENGTH)} کاراکتر باشد.`
   }
 
   if (values.contactName.length > OPTIONAL_TEXT_MAX_LENGTH) {
-    fieldErrors.contactName = `Contact name must be ${OPTIONAL_TEXT_MAX_LENGTH} characters or fewer.`
+    fieldErrors.contactName = `نام رابط باید حداکثر ${formatPersianNumber(OPTIONAL_TEXT_MAX_LENGTH)} کاراکتر باشد.`
   }
 
   const statusInput = values.status
   if (!isClientStatus(statusInput)) {
-    fieldErrors.status = "Status must be Active, Paused, or Archived."
+    fieldErrors.status = "وضعیت باید فعال، متوقف یا بایگانی باشد."
   }
 
   if (Object.keys(fieldErrors).length > 0) {
@@ -85,7 +86,7 @@ export async function createClient(
   if (!slug) {
     return {
       fieldErrors: {
-        name: "Name must contain at least one letter or number.",
+        name: "نام باید حداقل یک حرف یا عدد داشته باشد.",
       },
       values,
     }
@@ -94,8 +95,7 @@ export async function createClient(
   const existing = await db.client.findUnique({ where: { slug } })
   if (existing) {
     return {
-      error:
-        "A client with this name already exists. Please use a different name.",
+      error: "مشتری با این نام قبلاً ثبت شده است. لطفاً نام دیگری انتخاب کنید.",
       values,
     }
   }
@@ -114,8 +114,7 @@ export async function createClient(
   } catch (error) {
     if (isPrismaUniqueConstraintError(error)) {
       return {
-        error:
-          "A client with this name already exists. Please use a different name.",
+        error: "مشتری با این نام قبلاً ثبت شده است. لطفاً نام دیگری انتخاب کنید.",
         values,
       }
     }

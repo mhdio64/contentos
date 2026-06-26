@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
+import { CLIENT_STATUS_LABELS } from "@/lib/persian-format"
 import { createClient, type CreateClientState } from "./actions"
 
 const initialState: CreateClientState = {}
@@ -47,7 +48,7 @@ export function CreateClientForm() {
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="name" className="text-xs font-medium">
-          Name <span className="text-destructive">*</span>
+          نام <span className="text-destructive">*</span>
         </label>
         <Input
           id="name"
@@ -55,6 +56,7 @@ export function CreateClientForm() {
           required
           maxLength={120}
           defaultValue={values.name}
+          dir="auto"
           aria-invalid={Boolean(state.fieldErrors?.name)}
           aria-describedby={state.fieldErrors?.name ? "name-error" : undefined}
         />
@@ -67,13 +69,14 @@ export function CreateClientForm() {
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="industry" className="text-xs font-medium">
-          Industry
+          صنعت
         </label>
         <Input
           id="industry"
           name="industry"
           maxLength={120}
           defaultValue={values.industry}
+          dir="auto"
           aria-invalid={Boolean(state.fieldErrors?.industry)}
           aria-describedby={
             state.fieldErrors?.industry ? "industry-error" : undefined
@@ -88,13 +91,14 @@ export function CreateClientForm() {
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="contactName" className="text-xs font-medium">
-          Contact name
+          نام رابط
         </label>
         <Input
           id="contactName"
           name="contactName"
           maxLength={120}
           defaultValue={values.contactName}
+          dir="auto"
           aria-invalid={Boolean(state.fieldErrors?.contactName)}
           aria-describedby={
             state.fieldErrors?.contactName ? "contactName-error" : undefined
@@ -109,7 +113,7 @@ export function CreateClientForm() {
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="status" className="text-xs font-medium">
-          Status
+          وضعیت
         </label>
         <select
           id="status"
@@ -121,9 +125,9 @@ export function CreateClientForm() {
             state.fieldErrors?.status ? "status-error" : undefined
           }
         >
-          <option value="ACTIVE">Active</option>
-          <option value="PAUSED">Paused</option>
-          <option value="ARCHIVED">Archived</option>
+          <option value="ACTIVE">{CLIENT_STATUS_LABELS.ACTIVE}</option>
+          <option value="PAUSED">{CLIENT_STATUS_LABELS.PAUSED}</option>
+          <option value="ARCHIVED">{CLIENT_STATUS_LABELS.ARCHIVED}</option>
         </select>
         {state.fieldErrors?.status ? (
           <p id="status-error" className="text-[13px] text-destructive">
@@ -134,10 +138,10 @@ export function CreateClientForm() {
 
       <div className="flex items-center gap-2 pt-1">
         <Button type="submit" disabled={isPending}>
-          {isPending ? "Creating…" : "Create client"}
+          {isPending ? "در حال ایجاد…" : "ایجاد مشتری"}
         </Button>
         <Button variant="outline" asChild>
-          <Link href="/clients">Cancel</Link>
+          <Link href="/clients">انصراف</Link>
         </Button>
       </div>
     </form>

@@ -13,19 +13,19 @@ export default function NewClientPage() {
           href="/clients"
           className="text-sm text-muted-foreground hover:text-foreground w-fit"
         >
-          ← Back to clients
+          بازگشت به مشتریان
         </Link>
 
         <div>
-          <h1 className="text-xl font-semibold tracking-tight">New client</h1>
+          <h1 className="text-xl font-semibold tracking-tight">مشتری جدید</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Add a client record to your workspace.
+            یک رکورد مشتری به فضای کاری خود اضافه کنید.
           </p>
         </div>
 
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium">Client details</CardTitle>
+            <CardTitle className="text-sm font-medium">جزئیات مشتری</CardTitle>
           </CardHeader>
           <CardContent>
             <CreateClientForm />

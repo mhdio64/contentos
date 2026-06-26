@@ -1,4 +1,10 @@
 import { db } from "./db";
+import {
+  EMPTY_LABEL,
+  formatPersianDate,
+  formatPersianDateTime,
+  formatPersianDateRange,
+} from "./persian-format";
 
 function formatDate(date: Date): string {
   return date.toLocaleDateString("en-US", {
@@ -46,8 +52,8 @@ export async function getClients() {
     name: client.name,
     slug: client.slug,
     status: client.status,
-    industry: client.industry ?? "—",
-    contactName: client.contactName ?? "—",
+    industry: client.industry ?? EMPTY_LABEL,
+    contactName: client.contactName ?? EMPTY_LABEL,
     campaignCount: client._count.campaigns,
     contentCount: client._count.contentItems,
   }));
@@ -73,24 +79,24 @@ export async function getClientDetail(slug: string) {
     name: client.name,
     slug: client.slug,
     status: client.status,
-    industry: client.industry ?? "—",
-    contactName: client.contactName ?? "—",
-    createdAt: formatDate(client.createdAt),
-    updatedAt: formatDate(client.updatedAt),
+    industry: client.industry ?? EMPTY_LABEL,
+    contactName: client.contactName ?? EMPTY_LABEL,
+    createdAt: formatPersianDate(client.createdAt),
+    updatedAt: formatPersianDate(client.updatedAt),
     campaigns: client.campaigns.map((campaign) => ({
       id: campaign.id,
       name: campaign.name,
       status: campaign.status,
-      dateRange: formatDateRange(campaign.startsAt, campaign.endsAt),
+      dateRange: formatPersianDateRange(campaign.startsAt, campaign.endsAt),
     })),
     contentItems: client.contentItems.map((item) => ({
       id: item.id,
       title: item.title,
       status: item.status,
-      campaign: item.campaign?.name ?? "—",
-      channel: item.channel?.name ?? "—",
+      campaign: item.campaign?.name ?? EMPTY_LABEL,
+      channel: item.channel?.name ?? EMPTY_LABEL,
       priority: item.priority,
-      updatedAt: formatDateTime(item.updatedAt),
+      updatedAt: formatPersianDateTime(item.updatedAt),
     })),
   };
 }
