@@ -15,6 +15,7 @@ async function main() {
   await prisma.contentItemTag.deleteMany();
   await prisma.contentItem.deleteMany();
   await prisma.campaign.deleteMany();
+  await prisma.contact.deleteMany();
   await prisma.channel.deleteMany();
   await prisma.tag.deleteMany();
   await prisma.client.deleteMany();
@@ -99,6 +100,46 @@ async function main() {
       contactName: "Marketing Lead",
       status: "ACTIVE",
     },
+  });
+
+  await prisma.contact.createMany({
+    data: [
+      {
+        name: "سارا احمدی",
+        title: "مدیر محتوا",
+        phone: "+98 912 345 6789",
+        email: "sara.ahmadi@heydari-clinic.example",
+        isPrimary: true,
+        notes: "مسئول تأیید محتوای پزشکی و هماهنگی با تیم بالینی.",
+        clientId: heydari.id,
+      },
+      {
+        name: "رضا کریمی",
+        title: "هماهنگ‌کننده عملیات",
+        phone: "+98 935 111 2233",
+        email: "r.karimi@heydari-clinic.example",
+        isPrimary: false,
+        notes: "پیگیری زمان‌بندی انتشار و ارسال فایل‌های نهایی.",
+        clientId: heydari.id,
+      },
+      {
+        name: "مریم نوری",
+        title: "سرپرست بازاریابی",
+        phone: "+98 912 876 5432",
+        email: "maryam.nouri@houseofpaper.example",
+        isPrimary: true,
+        notes: "تصمیم‌گیرنده اصلی برای کمپین‌های فصلی.",
+        clientId: houseOfPaper.id,
+      },
+      {
+        name: "Ali Rezaei",
+        title: "Operations Coordinator",
+        phone: "+98 21 8877 6655",
+        email: "ali.rezaei@houseofpaper.example",
+        isPrimary: false,
+        clientId: houseOfPaper.id,
+      },
+    ],
   });
 
   const bariatricCampaign = await prisma.campaign.create({
@@ -222,6 +263,7 @@ async function main() {
   console.log("Seed completed");
   console.log({
     clients: 2,
+    contacts: 4,
     campaigns: 2,
     channels: 4,
     tags: 4,

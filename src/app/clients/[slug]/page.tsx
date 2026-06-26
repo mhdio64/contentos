@@ -1,9 +1,10 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { Briefcase, FileText } from "lucide-react"
+import { Briefcase, FileText, Plus, UserRound } from "lucide-react"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { EmptyState } from "@/components/ui/empty-state"
 import {
   Table,
@@ -19,6 +20,7 @@ import {
   getClientStatusLabel,
   getContentPriorityLabel,
   getContentStatusLabel,
+  EMPTY_LABEL,
 } from "@/lib/persian-format"
 
 export const dynamic = "force-dynamic"
@@ -76,6 +78,93 @@ export default async function ClientDetailPage({
             ایجاد: {client.createdAt} · به‌روزرسانی: {client.updatedAt}
           </p>
         </div>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between gap-3">
+              <CardTitle className="text-sm font-medium">مخاطبان</CardTitle>
+              <Button asChild size="sm" variant="outline">
+                <Link
+                  href={`/clients/${encodeURIComponent(client.slug)}/contacts/new`}
+                >
+                  <Plus className="size-3.5" />
+                  مخاطب جدید
+                </Link>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {client.contacts.length > 0 ? (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead className="h-8 text-xs font-medium">نام</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">سمت</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">تلفن</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">ایمیل</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">اصلی</TableHead>
+                      <TableHead className="h-8 text-xs font-medium">یادداشت</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {client.contacts.map((contact) => (
+                      <TableRow key={contact.id} className="border-border/40">
+                        <TableCell className="py-2.5 text-[13px] font-medium whitespace-nowrap">
+                          <span dir="auto">{contact.name}</span>
+                        </TableCell>
+                        <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">
+                          <span dir="auto">{contact.title}</span>
+                        </TableCell>
+                        <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">
+                          <span dir="ltr">{contact.phone}</span>
+                        </TableCell>
+                        <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">
+                          <span dir="ltr">{contact.email}</span>
+                        </TableCell>
+                        <TableCell className="py-2.5">
+                          {contact.isPrimary ? (
+                            <Badge
+                              variant="default"
+                              className="text-[10px] px-1.5 py-0 font-medium rounded-sm"
+                            >
+                              اصلی
+                            </Badge>
+                          ) : (
+                            <span className="text-[13px] text-muted-foreground">
+                              {EMPTY_LABEL}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell className="py-2.5 text-[13px] text-muted-foreground max-w-[240px]">
+                          <span dir="auto" className="block truncate">
+                            {contact.notes}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <EmptyState
+                icon={UserRound}
+                title="هنوز مخاطبی ثبت نشده"
+                description="مخاطبان این مشتری پس از افزودن، در اینجا نمایش داده می‌شوند."
+                action={
+                  <Button asChild variant="outline" size="sm">
+                    <Link
+                      href={`/clients/${encodeURIComponent(client.slug)}/contacts/new`}
+                    >
+                      <Plus className="size-3.5" />
+                      مخاطب جدید
+                    </Link>
+                  </Button>
+                }
+              />
+            )}
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader className="pb-3">

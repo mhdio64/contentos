@@ -63,6 +63,7 @@ export async function getClientDetail(slug: string) {
   const client = await db.client.findUnique({
     where: { slug },
     include: {
+      contacts: { orderBy: [{ isPrimary: "desc" }, { name: "asc" }] },
       campaigns: { orderBy: { updatedAt: "desc" } },
       contentItems: {
         include: { campaign: true, channel: true },
@@ -83,6 +84,17 @@ export async function getClientDetail(slug: string) {
     contactName: client.contactName ?? EMPTY_LABEL,
     createdAt: formatPersianDate(client.createdAt),
     updatedAt: formatPersianDate(client.updatedAt),
+    contacts: client.contacts.map((contact) => ({
+      id: contact.id,
+      name: contact.name,
+      title: contact.title ?? EMPTY_LABEL,
+      phone: contact.phone ?? EMPTY_LABEL,
+      email: contact.email ?? EMPTY_LABEL,
+      isPrimary: contact.isPrimary,
+      notes: contact.notes ?? EMPTY_LABEL,
+      createdAt: formatPersianDate(contact.createdAt),
+      updatedAt: formatPersianDate(contact.updatedAt),
+    })),
     campaigns: client.campaigns.map((campaign) => ({
       id: campaign.id,
       name: campaign.name,
@@ -98,6 +110,28 @@ export async function getClientDetail(slug: string) {
       priority: item.priority,
       updatedAt: formatPersianDateTime(item.updatedAt),
     })),
+  };
+}
+
+export async function getClientContactCreateContext(slug: string) {
+  const client = await db.client.findUnique({
+    where: { slug },
+    select: {
+      name: true,
+      slug: true,
+      _count: { select: { contacts: true } },
+    },
+  });
+
+  if (!client) {
+    return null;
+  }
+
+  return {
+    name: client.name,
+    slug: client.slug,
+    contactCount: client._count.contacts,
+    defaultIsPrimary: client._count.contacts === 0,
   };
 }
 
