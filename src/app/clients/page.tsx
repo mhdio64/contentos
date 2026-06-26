@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { Users } from "lucide-react"
 import { DashboardLayout } from "@/components/layout/dashboard-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -50,7 +51,12 @@ export default async function ClientsPage() {
                     {clients.map((client) => (
                       <TableRow key={client.id} className="border-border/40">
                         <TableCell className="py-2.5 text-[13px] font-medium whitespace-nowrap">
-                          {client.name}
+                          <Link
+                            href={`/clients/${client.slug}`}
+                            className="hover:text-primary hover:underline"
+                          >
+                            {client.name}
+                          </Link>
                         </TableCell>
                         <TableCell className="py-2.5 text-[13px] text-muted-foreground whitespace-nowrap">
                           {client.industry}
