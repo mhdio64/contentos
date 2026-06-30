@@ -20,6 +20,9 @@ type ActivityTypeValue = (typeof ACTIVITY_TYPES)[number]
 const TITLE_MAX_LENGTH = 200
 const BODY_MAX_LENGTH = 2000
 const FUTURE_TOLERANCE_MS = 5 * 60 * 1000
+const DATETIME_LOCAL_PATTERN = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/
+const MIN_TIMEZONE_OFFSET_MINUTES = -14 * 60
+const MAX_TIMEZONE_OFFSET_MINUTES = 14 * 60
 
 export type CreateActivityState = {
   error?: string | null
@@ -45,28 +48,80 @@ function isActivityType(value: string): value is ActivityTypeValue {
 
 function parseFormData(formData: FormData) {
   return {
-    type: String(formData.get("type") ?? "").trim(),
-    title: String(formData.get("title") ?? "").trim(),
-    body: String(formData.get("body") ?? "").trim(),
-    occurredAt: String(formData.get("occurredAt") ?? "").trim(),
-    contactId: String(formData.get("contactId") ?? "").trim(),
+    values: {
+      type: String(formData.get("type") ?? "").trim(),
+      title: String(formData.get("title") ?? "").trim(),
+      body: String(formData.get("body") ?? "").trim(),
+      occurredAt: String(formData.get("occurredAt") ?? "").trim(),
+      contactId: String(formData.get("contactId") ?? "").trim(),
+    },
+    occurredAtTimezoneOffset: String(
+      formData.get("occurredAtTimezoneOffset") ?? ""
+    ).trim(),
   }
 }
 
-function parseOccurredAt(value: string): Date | null {
-  if (!value) {
-    return new Date()
-  }
-
-  const parsed = new Date(value)
-  if (Number.isNaN(parsed.getTime())) {
+function parseTimezoneOffset(value: string): number | null {
+  const parsed = Number(value)
+  if (
+    !Number.isInteger(parsed) ||
+    parsed < MIN_TIMEZONE_OFFSET_MINUTES ||
+    parsed > MAX_TIMEZONE_OFFSET_MINUTES
+  ) {
     return null
   }
 
   return parsed
 }
 
-function validateValues(values: NonNullable<CreateActivityState["values"]>) {
+function parseOccurredAt(value: string, timezoneOffset: string): Date | null {
+  if (!value) {
+    return new Date()
+  }
+
+  const offsetMinutes = parseTimezoneOffset(timezoneOffset)
+  const match = DATETIME_LOCAL_PATTERN.exec(value)
+  if (offsetMinutes === null || !match) {
+    return null
+  }
+
+  const [, yearText, monthText, dayText, hourText, minuteText] = match
+  const year = Number(yearText)
+  const month = Number(monthText)
+  const day = Number(dayText)
+  const hour = Number(hourText)
+  const minute = Number(minuteText)
+
+  if (
+    month < 1 ||
+    month > 12 ||
+    day < 1 ||
+    day > 31 ||
+    hour > 23 ||
+    minute > 59
+  ) {
+    return null
+  }
+
+  const localTimestamp = Date.UTC(year, month - 1, day, hour, minute)
+  const normalized = new Date(localTimestamp)
+  if (
+    normalized.getUTCFullYear() !== year ||
+    normalized.getUTCMonth() !== month - 1 ||
+    normalized.getUTCDate() !== day ||
+    normalized.getUTCHours() !== hour ||
+    normalized.getUTCMinutes() !== minute
+  ) {
+    return null
+  }
+
+  return new Date(localTimestamp + offsetMinutes * 60 * 1000)
+}
+
+function validateValues(
+  values: NonNullable<CreateActivityState["values"]>,
+  occurredAtTimezoneOffset: string
+) {
   const fieldErrors: NonNullable<CreateActivityState["fieldErrors"]> = {}
 
   if (!values.type) {
@@ -85,7 +140,10 @@ function validateValues(values: NonNullable<CreateActivityState["values"]>) {
     fieldErrors.body = `شرح باید حداکثر ${formatPersianNumber(BODY_MAX_LENGTH)} کاراکتر باشد.`
   }
 
-  const occurredAt = parseOccurredAt(values.occurredAt)
+  const occurredAt = parseOccurredAt(
+    values.occurredAt,
+    occurredAtTimezoneOffset
+  )
   if (!occurredAt) {
     fieldErrors.occurredAt = "تاریخ وقوع معتبر نیست."
   } else {
@@ -112,8 +170,11 @@ export async function createActivity(
   _prevState: CreateActivityState,
   formData: FormData
 ): Promise<CreateActivityState> {
-  const values = parseFormData(formData)
-  const { fieldErrors, occurredAt } = validateValues(values)
+  const { values, occurredAtTimezoneOffset } = parseFormData(formData)
+  const { fieldErrors, occurredAt } = validateValues(
+    values,
+    occurredAtTimezoneOffset
+  )
 
   if (Object.keys(fieldErrors).length > 0) {
     return { fieldErrors, values }

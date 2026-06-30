@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useRef } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -40,15 +40,39 @@ export function CreateActivityForm({
   const [state, formAction, isPending] = useActionState(boundAction, {
     values: defaultValues,
   } satisfies CreateActivityState)
+  const occurredAtInputRef = useRef<HTMLInputElement>(null)
+  const occurredAtTimezoneOffsetInputRef = useRef<HTMLInputElement>(null)
 
   const values = state.values ?? defaultValues
+
+  function updateOccurredAtTimezoneOffset() {
+    if (!occurredAtTimezoneOffsetInputRef.current) {
+      return
+    }
+
+    const occurredAtValue = occurredAtInputRef.current?.value
+    const offsetDate = occurredAtValue ? new Date(occurredAtValue) : new Date()
+    const timezoneOffset = Number.isNaN(offsetDate.getTime())
+      ? new Date().getTimezoneOffset()
+      : offsetDate.getTimezoneOffset()
+
+    occurredAtTimezoneOffsetInputRef.current.value = String(timezoneOffset)
+  }
 
   return (
     <form
       action={formAction}
+      onSubmit={updateOccurredAtTimezoneOffset}
       key={JSON.stringify(state)}
       className="flex flex-col gap-4"
     >
+      <input
+        ref={occurredAtTimezoneOffsetInputRef}
+        type="hidden"
+        name="occurredAtTimezoneOffset"
+        defaultValue="0"
+      />
+
       {state.error ? (
         <p
           role="alert"
@@ -132,6 +156,7 @@ export function CreateActivityForm({
         </label>
         <Input
           id="occurredAt"
+          ref={occurredAtInputRef}
           name="occurredAt"
           type="datetime-local"
           defaultValue={values.occurredAt}
